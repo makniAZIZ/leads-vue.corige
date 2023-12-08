@@ -2,44 +2,39 @@
   <h1>Liste</h1>
   <ul>
     <li v-for="contact in contacts" :key="contact.id">
-      {{ contact.fields.Nom }} {{ contact.fields.Prenom }}
+      <a :href="contact.fields.url">
+        {{ contact.fields.titre }}
+        <div class="image"><img :src="contact.fields.image" alt="" /></div>
+      </a>
       <button @click="handleUpdate(contact)">Modifier</button>
       <button @click="deleteContact(contact.id)">Supprimer</button>
     </li>
   </ul>
 
-  <label for="nom">Nom</label>
-  <input type="text" name="nom" id="nom" v-model="nom" />
-  <label for="prenom">Prénom</label>
-  <input type="text" name="prenom" id="prenom" v-model="prenom" />
-  <label for="email">Email</label>
-  <input type="email" name="email" id="email" v-model="email" />
+  <label for="url">url</label>
+  <input type="url" name="url" id="url" v-model="url" />
   <button v-if="edit" @click="updateContact(selectedId)">Modifier</button>
   <button v-if="edit" @click="edit = false">Annuler</button>
   <button v-else @click="createContact">Créer un contact</button>
 </template>
 <script>
 const BASE_ID = import.meta.env.VITE_BASE_ID;
-const TABLE_NAME = "Leads";
+const TABLE_NAME = "url";
 const VIEW_NAME = "Grid view";
 const API_TOKEN = import.meta.env.VITE_TOKEN;
 
 export default {
   data() {
     return {
-      contacts: [],
-      nom: "",
-      prenom: "",
-      email: "",
+      url: "",
       selectedId: null,
       edit: false,
+      contacts: [],
     };
   },
   methods: {
     handleResetForm() {
-      this.nom = "";
-      this.prenom = "";
-      this.email = "";
+      this.url = "";
     },
     getContacts() {
       fetch(
@@ -82,9 +77,7 @@ export default {
         method: "PATCH",
         body: JSON.stringify({
           fields: {
-            Nom: this.nom,
-            Prenom: this.prenom,
-            Email: this.email,
+            url: this.url,
           },
         }),
       })
@@ -99,9 +92,7 @@ export default {
         });
     },
     handleUpdate(contact) {
-      this.nom = contact.fields.Nom;
-      this.prenom = contact.fields.Prenom;
-      this.email = contact.fields.Email;
+      this.url = contact.fields.url;
       this.selectedId = contact.id;
       this.edit = true;
     },
@@ -114,9 +105,7 @@ export default {
         method: "POST",
         body: JSON.stringify({
           fields: {
-            Nom: this.nom,
-            Prenom: this.prenom,
-            Email: this.email,
+            url: this.url,
           },
         }),
       })
@@ -136,4 +125,15 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.image {
+  width: 100px; /* Remplacez par la largeur souhaitée en pixels */
+  height: 100px; /* Remplacez par la hauteur souhaitée en pixels */
+}
+
+.image img {
+  width: 100%; /* Pour remplir la boîte parente */
+  height: 100%; /* Pour remplir la boîte parente */
+  border-radius: 8px; /* Ajoute un arrondi aux coins de l'image */
+}
+</style>
